@@ -144,39 +144,4 @@ function criaVeiculo() {
 while (veiculos.length < 10) {
   veiculos.push(criaVeiculo())
 }
-console.log(veiculos)
 
-
-
-
-
-
-/* CREATE TABLE CLIENTE
-(
-  NOME VARCHAR(200) NOT NULL,
-  CPF VARCHAR(14) NOT NULL,
-  RG VARCHAR(12) NOT NULL,
-  DATA_NASCIMENTO SMALLDATETIME NOT NULL,
-  ID_ENDERECO INT NOT NULL,
-  CONSTRAINT PK_ID_CLIENTE PRIMARY KEY (CPF),
-  CONSTRAINT FK_ID_ENDERECO FOREIGN KEY (ID_ENDERECO)
-  REFERENCES ENDERECO(ID_ENDERECO)
-) */
-/* 
-const cliente = {
-  nome: "",
-  cpf: "",
-  rg: "",
-  data_nascimento: "",
-  id_endereco: "",
-}
-const endereco = {
-  rua: "",
-  numero: "",
-  bairro: "",
-  cidade: "",
-  uf: "",
-  complemento: "",
-}
-const cpf = await leite.pessoa.nome()
-console.log(cpf) */
