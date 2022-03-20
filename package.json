@@ -1,0 +1,22 @@
+{
+  "name": "sql-insert-script-in-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tauz-hub/SQL-Insert-Script-in-Node.git"
+  },
+  "author": "tauz-hub",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tauz-hub/SQL-Insert-Script-in-Node/issues"
+  },
+  "homepage": "https://github.com/tauz-hub/SQL-Insert-Script-in-Node#readme",
+  "dependencies": {
+    "leite": "^0.2.0"
+  }
+}
