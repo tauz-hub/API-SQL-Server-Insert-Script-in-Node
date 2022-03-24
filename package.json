@@ -2,9 +2,11 @@
   "name": "sql-insert-script-in-node",
   "version": "1.0.0",
   "description": "",
+  "private":"true",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www",
+    "dev": "nodemon ./app.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +19,14 @@
   },
   "homepage": "https://github.com/tauz-hub/SQL-Insert-Script-in-Node#readme",
   "dependencies": {
-    "leite": "^0.2.0"
+    "leite": "^0.2.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "mssql": "^8.0.2",
+    "nodemon": "^2.0.15"
   }
 }
