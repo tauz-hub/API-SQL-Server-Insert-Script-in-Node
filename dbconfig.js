@@ -12,4 +12,4 @@ const config = {
   port: 34003
 };
 
-module.exports = config;
+export default config

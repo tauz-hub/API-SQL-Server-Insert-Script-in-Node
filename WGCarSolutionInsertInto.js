@@ -77,27 +77,27 @@ while (iSetor <= countSetor) {
 
 
 
-const clientes = [];
-const clientesQuery = []
-function criaCliente() {
+const pessoas = [];
+const pessoasQuery = []
+function criarPessoas() {
   let nome;
   do {
     nome = leite.pessoa.nome()
   } while (nome.includes("'"))
 
-  const cliente = {
+  const pessoa = {
     nome,
     cpf: leite.pessoa.cpf(),
     rg: leite.pessoa.rg().replace(/(\.)|(\-)/g, ''),
     data_nascimento: leite.pessoa.nascimento({ string: true }),
     id_endereco: Math.floor(Math.random() * enderecosQuery.length) + 1
   }
-  return cliente
+  return pessoa
 }
-while (clientes.length < 10) {
-  const cliente = criaCliente()
-  clientesQuery.push(`INSERT INTO CLIENTES (NOME,CPF,RG,DATA_NASCIMENTO,ID_ENDERECO) VALUES ('${cliente.nome}','${cliente.cpf}','${cliente.rg}','${cliente.data_nascimento}','${cliente.id_endereco}')`)
-  clientes.push(cliente)
+while (pessoas.length < 30) {
+  const pessoa = criarPessoas()
+  pessoasQuery.push(`INSERT INTO PESSOAS (NOME,CPF,RG,DATA_NASCIMENTO,FK_ENDERECO) VALUES ('${pessoa.nome}','${pessoa.cpf}','${pessoa.rg}','${pessoa.data_nascimento}','${pessoa.id_endereco}')`)
+  pessoas.push(pessoa)
 }
 
 
@@ -110,32 +110,56 @@ while (clientes.length < 10) {
 let iFuncionario = 1;
 const funcionarios = [];
 const funcionariosQuery = [];
+let funcionariosPessoas = pessoas
 function criaFuncionario() {
   let nome;
   do {
     nome = leite.pessoa.nome()
   } while (nome.includes("'"))
 
+  const pessoaID = Math.floor(Math.random() * funcionariosPessoas.length)
   const funcionario = {
     codigo_registro: iFuncionario,
-    nome,
-    cpf: leite.pessoa.cpf(),
-    rg: leite.pessoa.rg().replace(/(\.)|(\-)/g, ''),
-    data_nascimento: leite.pessoa.nascimento({ string: true }),
-    id_endereco: Math.floor(Math.random() * enderecosQuery.length) + 1
-
+    id_pessoa: funcionariosPessoas[pessoaID].cpf
   }
+  funcionariosPessoas.splice(pessoaID, 1)
   iFuncionario++;
   return funcionario
 }
 while (funcionarios.length < 10) {
   const funcionario = criaFuncionario()
   funcionarios.push(funcionario)
-  funcionariosQuery.push(`INSERT INTO FUNCIONARIOS (NOME,CPF,RG,DATA_NASCIMENTO,ID_ENDERECO) VALUES ('${funcionario.nome}','${funcionario.cpf}','${funcionario.rg}','${funcionario.data_nascimento}','${funcionario.id_endereco}')`)
+  funcionariosQuery.push(`INSERT INTO FUNCIONARIOS (id_pessoa) VALUES ('${funcionario.id_pessoa}')`)
 
 }
 
 
+
+let iCliente = 1;
+const clientes = [];
+const clientesQuery = [];
+const clientesPessoas = pessoas
+function criarClientes() {
+  let nome;
+  do {
+    nome = leite.pessoa.nome()
+  } while (nome.includes("'"))
+
+  const pessoaID = Math.floor(Math.random() * clientesPessoas.length)
+  const cliente = {
+    id_cliente: iCliente,
+    id_pessoa: clientesPessoas[pessoaID].cpf
+  }
+  clientesPessoas.splice(pessoaID, 1)
+  iCliente++;
+  return cliente
+}
+while (clientes.length < 10) {
+  const cliente = criarClientes()
+  clientes.push(cliente)
+  clientesQuery.push(`INSERT INTO CLIENTES (id_pessoa) VALUES ('${cliente.id_pessoa}')`)
+
+}
 
 
 
@@ -155,7 +179,7 @@ function criaTelefone() {
 
   const telefone = {
     id_telefone: iTelefone,
-    id_pessoa: /* Math.floor(Math.random() * 2) */ true ? clientes[Math.floor(Math.random() * clientes.length)].cpf : funcionarios[Math.floor(Math.random() * funcionarios.length)].cpf,
+    id_pessoa: pessoas[Math.floor(Math.random() * pessoas.length)].cpf,
     telefone: numero,
   }
   iTelefone++;
@@ -163,7 +187,7 @@ function criaTelefone() {
 }
 while (telefonesQuery.length < 10) {
   const telefone = criaTelefone()
-  telefonesQuery.push(`INSERT INTO TELEFONES (ID_CLIENTE, TELEFONE) VALUES ('${telefone.id_pessoa}', '${telefone.telefone}')`)
+  telefonesQuery.push(`INSERT INTO TELEFONES (ID_PESSOA, TELEFONE) VALUES ('${telefone.id_pessoa}', '${telefone.telefone}')`)
 }
 
 
@@ -207,7 +231,7 @@ Date.prototype.addDays = function (days) {
 
 let veiculos = []
 const veiculosQuery = [];
-function criaVeiculo() {
+function criarVeiculo() {
   let chassi = ""
   while (chassi.length <= 17) {
     chassi += Math.floor(Math.random() * 17)
@@ -235,15 +259,15 @@ function criaVeiculo() {
     modelo: leite.veiculo.modelo(),
     data_modelo: dataBaixa.toLocaleString().substr(0, 10),
     data_fabricacao: dataFabricacao.toLocaleString().substr(0, 10),
-    id_cliente: clientes[Math.floor(Math.random() * clientes.length)].cpf
+    id_pessoa: Math.floor(Math.random() * pessoas.length) + 1
   }
   return veiculo
 }
 
 while (veiculos.length < 10) {
-  const veiculo = criaVeiculo()
+  const veiculo = criarVeiculo()
   veiculos.push(veiculo)
-  veiculosQuery.push(`INSERT INTO VEICULOS (RENAVAM,CHASSI,MARCA,MODELO,ANO_MODELO, ANO_FABRICACAO, ID_CLIENTE) VALUES ('${veiculo.renavam}','${veiculo.chassi}','${veiculo.marca}','${veiculo.modelo}','${veiculo.data_modelo}','${veiculo.data_fabricacao}','${veiculo.id_cliente}')`)
+  veiculosQuery.push(`INSERT INTO VEICULOS (RENAVAM,CHASSI,MARCA,MODELO,ANO_MODELO, ANO_FABRICACAO, ID_CLIENTE) VALUES ('${veiculo.renavam}','${veiculo.chassi}','${veiculo.marca}','${veiculo.modelo}','${veiculo.data_modelo}','${veiculo.data_fabricacao}','${veiculo.id_pessoa}')`)
 }
 
 
@@ -445,17 +469,18 @@ while (tipoServicos.length <= 10) {
 }
 
 
-fs.readFile("./INSERTWG.txt", function (err, content) {
+fs.readFile("./INSERTWG.sql", function (err, content) {
 
   let parseJson = enderecosQuery.join('\n') + '\n'
     + setoresQuery.join('\n') + '\n'
+    + pessoasQuery.join('\n') + '\n'
     + clientesQuery.join('\n') + '\n'
     + funcionariosQuery.join('\n')
     + '\n' + telefonesQuery.join('\n')
     + '\n' + veiculosQuery.join('\n')
     + '\n' + funcionarioSetoresQuery.join('\n')
     + '\n' + servicosQuery.join('\n')
-  fs.appendFile("./INSERTWG.txt", parseJson, function (err) {
+  fs.appendFile("./INSERTWG.sql", parseJson, function (err) {
 
   })
 })

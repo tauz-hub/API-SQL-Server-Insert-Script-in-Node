@@ -1,7 +1,6 @@
-const { json } = require('express');
-let express = require('express');
+import express from 'express'
 let router = express.Router();
-const sql = require("../dboperation");
+import sql from '../dboperation.js'
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -9,18 +8,14 @@ router.get('/', function (req, res, next) {
 });
 
 
-//test connection
-router.get('/testconnect', function (req, res, next) {
-  sql.getdata(res);/* 
-  res.render('index', { title: 'Express' }); */
+//query connection
+router.get('/request/:query', function (req, res, next) {
+
+  const query = req.params.query
+  console.log("query" + query)
+  sql.queryRequest(query, res);
 });
 
 
-router.get("/getdata_withQuery", function (req, res, next) {
-  sql.getdata_withQuery().then((result) => {
-    res.json(result[0]);
-  });
-});
 
-
-module.exports = router;
+export default router;
