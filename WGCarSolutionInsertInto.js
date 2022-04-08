@@ -2,8 +2,6 @@ import Leite from 'leite'
 import fs from 'fs'
 const leite = new Leite()
 
-
-
 let iEndereco = 1;
 let enderecosQuery = [];
 function criaEndereco() {
@@ -34,11 +32,12 @@ function criaEndereco() {
   iEndereco++;
   return endereco
 }
-while (iEndereco <= 10) {
+while (iEndereco <= 100) {
 
   const endereco = criaEndereco()
   const codigoInsert = `INSERT INTO ENDERECOS ( RUA, BAIRRO, NUMERO, CIDADE, UF, COMPLEMENTO) VALUES ('${endereco.rua}','${endereco.bairro}','${endereco.numero}','${endereco.cidade}','${endereco.uf}','${endereco.complemento}')`
 
+  console.log(codigoInsert)
   enderecosQuery.push(codigoInsert)
 }
 
@@ -81,9 +80,14 @@ const pessoas = [];
 const pessoasQuery = []
 function criarPessoas() {
   let nome;
+  let cpf;
   do {
     nome = leite.pessoa.nome()
   } while (nome.includes("'"))
+
+  do {
+    cpf = leite.pessoa.cpf()
+  } while (pessoas.some((pessoa => pessoa.cpf == cpf)))
 
   const pessoa = {
     nome,
@@ -94,9 +98,9 @@ function criarPessoas() {
   }
   return pessoa
 }
-while (pessoas.length < 30) {
+while (pessoas.length < 300) {
   const pessoa = criarPessoas()
-  pessoasQuery.push(`INSERT INTO PESSOAS (NOME,CPF,RG,DATA_NASCIMENTO,FK_ENDERECO) VALUES ('${pessoa.nome}','${pessoa.cpf}','${pessoa.rg}','${pessoa.data_nascimento}','${pessoa.id_endereco}')`)
+  pessoasQuery.push(`INSERT INTO PESSOAS ( NOME ,CPF,RG,DATA_NASCIMENTO,FK_ENDERECO) VALUES ('${pessoa.nome}','${pessoa.cpf}','${pessoa.rg}','${pessoa.data_nascimento}',${pessoa.id_endereco})`)
   pessoas.push(pessoa)
 }
 
@@ -113,9 +117,14 @@ const funcionariosQuery = [];
 let funcionariosPessoas = pessoas
 function criaFuncionario() {
   let nome;
+  let cpf;
   do {
     nome = leite.pessoa.nome()
   } while (nome.includes("'"))
+  do {
+    cpf = leite.pessoa.cpf()
+  } while (pessoas.some((pessoa => pessoa.cpf == cpf)))
+
 
   const pessoaID = Math.floor(Math.random() * funcionariosPessoas.length)
   const funcionario = {
@@ -126,7 +135,7 @@ function criaFuncionario() {
   iFuncionario++;
   return funcionario
 }
-while (funcionarios.length < 10) {
+while (funcionarios.length < 30) {
   const funcionario = criaFuncionario()
   funcionarios.push(funcionario)
   funcionariosQuery.push(`INSERT INTO FUNCIONARIOS (id_pessoa) VALUES ('${funcionario.id_pessoa}')`)
@@ -154,7 +163,7 @@ function criarClientes() {
   iCliente++;
   return cliente
 }
-while (clientes.length < 10) {
+while (clientes.length < 200) {
   const cliente = criarClientes()
   clientes.push(cliente)
   clientesQuery.push(`INSERT INTO CLIENTES (id_pessoa) VALUES ('${cliente.id_pessoa}')`)
@@ -185,7 +194,7 @@ function criaTelefone() {
   iTelefone++;
   return telefone;
 }
-while (telefonesQuery.length < 10) {
+while (telefonesQuery.length < 100) {
   const telefone = criaTelefone()
   telefonesQuery.push(`INSERT INTO TELEFONES (ID_PESSOA, TELEFONE) VALUES ('${telefone.id_pessoa}', '${telefone.telefone}')`)
 }
@@ -264,7 +273,7 @@ function criarVeiculo() {
   return veiculo
 }
 
-while (veiculos.length < 10) {
+while (veiculos.length < 210) {
   const veiculo = criarVeiculo()
   veiculos.push(veiculo)
   veiculosQuery.push(`INSERT INTO VEICULOS (RENAVAM,CHASSI,MARCA,MODELO,ANO_MODELO, ANO_FABRICACAO, ID_CLIENTE) VALUES ('${veiculo.renavam}','${veiculo.chassi}','${veiculo.marca}','${veiculo.modelo}','${veiculo.data_modelo}','${veiculo.data_fabricacao}','${veiculo.id_pessoa}')`)
@@ -341,7 +350,7 @@ function criaServicos() {
   return servico
 }
 
-while (servicos.length <= 45) {
+while (servicos.length <= 100) {
   const servico = criaServicos()
   const dataregistro = servico.data_registro.toLocaleString()
 
@@ -469,18 +478,25 @@ while (tipoServicos.length <= 10) {
 }
 
 
+
+
 fs.readFile("./INSERTWG.sql", function (err, content) {
 
   let parseJson = enderecosQuery.join('\n') + '\n'
-    + setoresQuery.join('\n') + '\n'
-    + pessoasQuery.join('\n') + '\n'
+    + setoresQuery.join('\n') + '\n' +
+    pessoasQuery.join('\n') + '\n'
     + clientesQuery.join('\n') + '\n'
     + funcionariosQuery.join('\n')
     + '\n' + telefonesQuery.join('\n')
     + '\n' + veiculosQuery.join('\n')
     + '\n' + funcionarioSetoresQuery.join('\n')
     + '\n' + servicosQuery.join('\n')
+    + '\n' + tipoServicosQuery.join('\n')
+    + '\n' + agendamentosQuery.join('\n')
   fs.appendFile("./INSERTWG.sql", parseJson, function (err) {
 
   })
 })
+
+
+
